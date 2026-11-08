@@ -24,11 +24,17 @@ Auteur : **Blunpai** · Licence : [CC BY-NC-SA 4.0](LICENSE) · Gratuit, projet 
 
 ### Installation
 
-1. Télécharge le dernier zip dans [Releases](../../releases/latest).
-2. Décompresse-le dans le dossier `/userdata/` de ta Batocera (partage réseau `\\BATOCERA\share` ou FTP) : il contient `themes/NXE360/` et `system/scripts/nxe360_recent.sh`.
-3. Le script doit être exécutable. Si besoin, en SSH : `chmod +x /userdata/system/scripts/nxe360_recent.sh`
-4. Dans les réglages de l'interface d'EmulationStation, choisis le thème **NXE360**, puis redémarre EmulationStation.
-5. Les options (langue, escalier, vidéo, boucle, effet cathodique, fond d'écran…) sont dans la **configuration du thème**.
+1. Dans EmulationStation : **Menu → Mises à jour et téléchargements → Thèmes → NXE360**.
+2. Réglages de l'interface → Thème → **NXE360**.
+3. Pour les fonctions du script (voir plus bas), une seule fois :
+   - copie le fichier **`NXE360 - Installation.sh`** du dossier du thème (`\\BATOCERA\share\themes\NXE360\`) dans `\\BATOCERA\share\roms\ports\` (réseau, FTP ou clé USB) ;
+   - **Menu → Mettre à jour la liste des jeux** ;
+   - lance **NXE360 - Installation** dans **Ports**. Le thème se prépare 1 à 2 minutes puis se recharge tout seul.
+   - (en SSH, à la place : `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`)
+4. Les options (langue, escalier, vidéo, boucle, effet cathodique, fond d'écran…) sont dans la **configuration du thème**.
+
+Les scripts sont dans le dossier du thème : une mise à jour du thème les met à jour aussi, et tes avatars 360sona sont gardés.
+Pour créer ton avatar : lance **360sona** dans Ports.
 
 ### Le script `nxe360_recent.sh`
 
@@ -60,11 +66,17 @@ Il utilise le compte RetroAchievements déjà enregistré dans Batocera : il n'e
 
 ### Installation
 
-1. Download the latest zip from [Releases](../../releases/latest).
-2. Extract it into your Batocera `/userdata/` folder (network share `\\BATOCERA\share` or FTP): it contains `themes/NXE360/` and `system/scripts/nxe360_recent.sh`.
-3. The script must be executable. If needed, over SSH: `chmod +x /userdata/system/scripts/nxe360_recent.sh`
-4. In EmulationStation's UI settings, select the **NXE360** theme, then restart EmulationStation.
-5. Options (language, staircase, video, loop, CRT effect, wallpaper…) are in the **theme configuration**.
+1. In EmulationStation: **Menu → Updates & downloads → Themes → NXE360**.
+2. UI settings → Theme → **NXE360**.
+3. For the script features (see below), once:
+   - copy **`NXE360 - Installation.sh`** from the theme folder (`\\BATOCERA\share\themes\NXE360\`) to `\\BATOCERA\share\roms\ports\` (network, FTP or USB stick);
+   - **Menu → Update games lists**;
+   - launch **NXE360 - Installation** from **Ports**. The theme prepares itself for 1-2 minutes, then reloads.
+   - (over SSH instead: `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`)
+4. Options (language, staircase, video, loop, CRT effect, wallpaper…) are in the **theme configuration**.
+
+The scripts live in the theme folder: updating the theme updates them too, and your 360sona avatars are kept.
+To create your avatar: launch **360sona** from Ports.
 
 ### The `nxe360_recent.sh` script
 
