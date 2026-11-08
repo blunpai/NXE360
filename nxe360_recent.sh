@@ -114,7 +114,6 @@ avatar_sync() {
             [ -f "$f" ] && [ ! -e "$a/$n" ] && { ln -f "$f" "$a/$n" 2>/dev/null || cp -f "$f" "$a/$n"; }
         done
         : > "$a/.nxe360_ok"
-        return 0
     fi
     for f in "$b"/*; do [ -f "$f" ] && [ ! -e "$a/${f##*/}" ] && rm -f "$f"; done   # avatar retiré du thème : retiré de la copie
     for f in "$a"/*; do
