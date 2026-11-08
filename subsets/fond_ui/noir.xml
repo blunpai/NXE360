@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fond de l'interface : noir (le réglage lui-même est dans les blocs « ifSubset=uibg » de theme.xml) -->
+<theme>
+    <variables>
+        <uibgChoice>noir</uibgChoice>
+    </variables>
+</theme>

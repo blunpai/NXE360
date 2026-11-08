@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Theme « XBOX360 » : les 10 fonds Xbox 360. Le numéro vient du menu « Image de fond » (variable xbFond). -->
+<theme>
+    <include>./Xbox 360/bg_fond${xbFond}.xml</include>
+</theme>

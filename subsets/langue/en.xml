@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Langue : English -->
+<theme>
+    <variables>
+        <favOnline>Online</favOnline>
+        <favOffline>Offline</favOffline>
+        <favService>RetroAchievements</favService>
+        <favGamesLabel>Favorite games</favGamesLabel>
+        <favRecentLabel>Recent games</favRecentLabel>
+        <raGuest>Guest</raGuest>
+        <toastText>signed in to RetroAchievements</toastText>
+        <toastLostText>signed out of RetroAchievements</toastLostText>
+        <helpSelect>Select</helpSelect>
+        <helpSearch>Search</helpSearch>
+        <bubbleHello>Hi</bubbleHello>
+        <bubbleText2>Welcome to my Xbox 360.</bubbleText2>
+        <bubbleText3>Have fun!</bubbleText3>
+        <gamesWord>games</gamesWord>
+        <favWordOne>favorite</favWordOne>
+        <favWordMany>favorites</favWordMany>
+        <lastPlayedWord>Last played:</lastPlayedWord>
+        <neverPlayedWord>Never played</neverPlayedWord>
+        <subset.stairs>Stairs</subset.stairs>
+        <stairsOff>Disabled</stairsOff>
+        <stairsOn>Enabled</stairsOn>
+        <subset.loop>Systems loop</subset.loop>
+        <loopOff>Disabled</loopOff>
+        <loopOn>Enabled</loopOn>
+        <subset.crt>CRT effect</subset.crt>
+        <crtLight>Light</crtLight>
+        <crtOff>Off</crtOff>
+        <crtStrong>Strong</crtStrong>
+        <subset.uibg>Interface background</subset.uibg>
+        <uibgNxe>NXE</uibgNxe>
+        <uibgBlack>Black</uibgBlack>
+    </variables>
+</theme>

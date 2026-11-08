@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Boucle des systèmes : ACTIVÉE. Carrousel d'origine d'EmulationStation : après la dernière carte, la première. -->
+<theme>
+    <variables>
+        <sysLoop>on</sysLoop>
+    </variables>
+</theme>

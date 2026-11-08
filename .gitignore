@@ -1,0 +1,15 @@
+# Fabriques par nxe360_recent.sh chez chaque utilisateur
+**/art/recent/
+**/art/stair/
+**/art/spot/
+**/art/gstack/
+# Avatar personnel (360sona) : seul art/avatar/default* est livre
+**/art/avatar/export*
+**/art/avatar/*.glb
+# Sauvegardes, journaux, fichiers systeme
+*.bak
+*.tmp
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store

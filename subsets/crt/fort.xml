@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Effet cathodique : fort (le réglage lui-même est dans les blocs « ifSubset=crt » de theme.xml) -->
+<theme>
+    <variables>
+        <crtChoice>fort</crtChoice>
+    </variables>
+</theme>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Boucle des systèmes : DÉSACTIVÉE (par défaut). La liste des systèmes a un début et une fin, comme sur le NXE :
+     au bout, le carrousel revient sur la carte du bout. C'est nxe360_recent.sh qui s'en charge (EmulationStation, lui,
+     fait toujours le tour de la liste) ; ce fichier ne fait que déclarer le choix. -->
+<theme>
+    <variables>
+        <sysLoop>off</sysLoop>
+    </variables>
+</theme>

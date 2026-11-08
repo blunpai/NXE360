@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Image de fond « Fond 2 » : fond Xbox 360 n°2 (theme XBOX360), image 2 des themes de jeux -->
+<theme>
+    <variables>
+        <xbFond>2</xbFond>
+        <wpNum>02</wpNum>
+    </variables>
+</theme>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Repère : le Theme XBOX360 est choisi -> « Image de fond » propose Fond 1 à 10 -->
+<theme>
+    <variables>
+        <bgXbox>true</bgXbox>
+    </variables>
+</theme>

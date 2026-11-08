@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+    <formatVersion>7</formatVersion>
+
+    <!-- FOND DE LA VUE DES CONSOLES = IMAGE SCRAPÉE D'UN JEU DE LA CONSOLE (au hasard) -->
+    <view name="system">
+        <image name="bg_scraped" extra="true">
+            <path>firstfile("/userdata/roms/xbox360/images/NomDuJeu-fanart.png",
+{system:random:fanart}, "${themePath}/art/bg.png")</path>
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <color>FFFFFFC0</color>
+            <zIndex>46</zIndex>
+        </image>
+    </view>
+</theme>

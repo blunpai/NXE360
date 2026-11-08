@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Langue : Français (par défaut) -->
+<theme>
+    <variables>
+        <favOnline>Connecté</favOnline>
+        <favOffline>Déconnecté</favOffline>
+        <favService>RetroAchievements</favService>
+        <favGamesLabel>Jeux favoris</favGamesLabel>
+        <favRecentLabel>Derniers jeux</favRecentLabel>
+        <raGuest>Invité</raGuest>
+        <toastText>connecté à RetroAchievements</toastText>
+        <toastLostText>déconnecté de RetroAchievements</toastLostText>
+        <helpSelect>Sélectionner</helpSelect>
+        <helpSearch>Rechercher</helpSearch>
+        <bubbleHello>Salut</bubbleHello>
+        <bubbleText2>Bienvenue sur ma Xbox 360.</bubbleText2>
+        <bubbleText3>Amuse-toi bien !</bubbleText3>
+        <gamesWord>jeux</gamesWord>
+        <favWordOne>favori</favWordOne>
+        <favWordMany>favoris</favWordMany>
+        <lastPlayedWord>Dernière partie :</lastPlayedWord>
+        <neverPlayedWord>Jamais lancé</neverPlayedWord>
+        <subset.stairs>Escalier</subset.stairs>
+        <stairsOff>Désactivé</stairsOff>
+        <stairsOn>Activé</stairsOn>
+        <subset.loop>Boucle des systèmes</subset.loop>
+        <loopOff>Désactivée</loopOff>
+        <loopOn>Activée</loopOn>
+        <subset.crt>Effet cathodique</subset.crt>
+        <crtLight>Léger</crtLight>
+        <crtOff>Désactivé</crtOff>
+        <crtStrong>Fort</crtStrong>
+        <subset.uibg>Fond de l'interface</subset.uibg>
+        <uibgNxe>NXE</uibgNxe>
+        <uibgBlack>Noir</uibgBlack>
+    </variables>
+</theme>

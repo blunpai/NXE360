@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme>
+    <formatVersion>7</formatVersion>
+    <view name="system, grid">
+        <image name="background" extra="true">
+            <path>./ressources/wallpapers/Arkadian Warriors - Themepack - Arkadian Warriors - ${wpNum}.jpg</path>
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <zIndex>-1</zIndex>
+        </image>
+    </view>
+    <view name="splash">
+        <image name="fond_theme_splash" extra="true">
+            <path>./ressources/wallpapers/Arkadian Warriors - Themepack - Arkadian Warriors - ${wpNum}.jpg</path>
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <zIndex>0</zIndex>
+        </image>
+    </view>
+</theme>

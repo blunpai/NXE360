@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Image de fond « Fond 7 » : fond Xbox 360 n°7 (theme XBOX360) -->
+<theme>
+    <variables>
+        <xbFond>7</xbFond>
+        <wpNum>03</wpNum>
+    </variables>
+</theme>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    NXE360 - écran de chargement d'EmulationStation
+    (démarrage d'ES et "Mettre à jour la liste des jeux")
+
+    Affiche uniquement l'arrière-plan actif de l'utilisateur (Theme + Image de fond
+    choisis dans la configuration du thème) avec la roue de chargement. Pas de texte, pas de barre.
+
+    À placer à la racine du thème : /userdata/themes/NXE360/splash.xml
+-->
+<theme>
+    <formatVersion>7</formatVersion>
+
+    <!-- Relit theme.xml : ES y applique les options choisies par l'utilisateur,
+         ce qui donne ${subset.background} (Theme choisi), ${wpNum} (image 1-4 d'un theme de jeu),
+         ${bgXbox} (Theme XBOX360 choisi) et ${xbFond} (Fond 1-10 de XBOX360). -->
+    <include>./theme.xml</include>
+
+    <view name="splash">
+
+        <splash name="splash">
+            <backgroundColor>000000FF</backgroundColor>
+        </splash>
+
+        <!-- Theme XBOX360 : le fond Xbox 360 choisi dans « Image de fond » (mêmes images que subsets/Xbox 360/bg_fondN.xml) -->
+        <image name="fond_xbox360" extra="true" if="${bgXbox}">
+            <path>./ressources/fond${xbFond}.jpg</path>
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <zIndex>1</zIndex>
+        </image>
+
+        <!-- Theme de jeu : son image choisie dans « Image de fond » (le même fichier que dans le menu) -->
+        <image name="fond_actif_jpg" extra="true">
+            <path>./ressources/wallpapers/${subset.background} - ${wpNum}.jpg</path>
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <zIndex>1</zIndex>
+        </image>
+        <image name="fond_actif" extra="true">
+            <path>./ressources/wallpapers/${subset.background} - ${wpNum}.jpg</path>
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <zIndex>2</zIndex>
+        </image>
+
+        <!-- sol de l'option « Fond de l'interface » (NXE gris ou noir), toujours par-dessus l'arrière-plan (et sous la roue) -->
+        <image name="sol_gris" extra="true">
+            <path>${uiBg}</path>
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <zIndex>3</zIndex>
+        </image>
+
+        <!-- la roue de chargement, au milieu du ciel (au-dessus du sol gris) -->
+        <image name="background">
+            <path>./art/loading_nxe.png</path>
+            <pos>0.5 0.40</pos>
+            <origin>0.5 0.5</origin>
+            <maxSize>0.2 0.2</maxSize>
+            <linearSmooth>true</linearSmooth>
+        </image>
+
+        <!-- texte d'état masqué -->
+        <text name="label">
+            <color>00000000</color>
+        </text>
+
+        <!-- barre de progression masquée -->
+        <image name="progressbar">
+            <color>00000000</color>
+            <roundCorners>0</roundCorners>
+        </image>
+        <image name="progressbar:active">
+            <color>00000000</color>
+        </image>
+
+    </view>
+</theme>
