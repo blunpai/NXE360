@@ -2603,6 +2603,7 @@ def gstack_run():
         else:
             im.convert("RGB").save(dst, "JPEG", quality=88)   # nom en .png : ES reconnaît le format au contenu
 
+    failed = False
     for s in systems if isinstance(systems, list) else []:
         name = str(s.get("name") or "") if isinstance(s, dict) else ""
         if not name or str(s.get("visible", "true")).lower() != "true" or "/" in name:
@@ -2613,6 +2614,7 @@ def gstack_run():
         except Exception as e:
             log(f"file de jaquettes : liste de {name} illisible ({e!r})")
             seen.add(name)                             # on garde l'existant
+            failed = True                              # ES occupé (rechargement) : refait dans 10 s
             continue
         if not games or len(games) < 2:
             continue
@@ -2665,7 +2667,7 @@ def gstack_run():
         log(f"file de jaquettes : {changed} jeu(x) mis à jour")
     if sys_dirs() != before:   # le thème choisit file ou jaquettes de la grille selon art/gstack/<système> : ES doit le relire
         reload_es(0)
-    return changed
+    return -1 if failed else changed
 
 def gstack_sig():
     """Change quand une liste de jeux ou un réglage d'ES change (gamelist.xml, es_settings.cfg)."""
