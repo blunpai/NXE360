@@ -1,94 +1,130 @@
+<div align="center">
+
 # NXE360
 
-**Thème EmulationStation pour Batocera, façon tableau de bord Xbox 360 NXE (New Xbox Experience).**
-*EmulationStation theme for Batocera, styled after the Xbox 360 NXE dashboard. English below.*
+### The Xbox 360 NXE dashboard, rebuilt for Batocera
 
-Auteur : **Blunpai** · Licence : [CC BY-NC-SA 4.0](LICENSE) · Gratuit, projet de fan
+*Le tableau de bord Xbox 360 NXE, recréé pour Batocera*
+
+[![Batocera](https://img.shields.io/badge/Batocera-EmulationStation-107C10?style=for-the-badge)](https://batocera.org)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=for-the-badge)](LICENSE)
+[![Free](https://img.shields.io/badge/Price-Free-107C10?style=for-the-badge)](#license)
+
+<!-- Capture d'écran : ajoute docs/screenshot.jpg puis enlève les balises de commentaire de la ligne suivante -->
+<!-- <img src="docs/screenshot.jpg" alt="NXE360" width="900"> -->
+
+**[English](#english)** · **[Français](#français)**
+
+</div>
 
 ---
 
-## 🇫🇷 Français
+## English
 
-### Fonctionnalités
+### Highlights
 
-- **Cartes vertes NXE** : 6 cartes à l'écran, la carte sélectionnée en grand, reflets sur le sol, zoom « caméra » quand on change de système.
-- **Escalier** (option) : les cartes rétrécissent de marche en marche, comme sur le NXE.
-- **Carte profil** : pseudo RetroAchievements, points (façon gamerscore), avatar et les 4 derniers jeux joués.
-- **Carte vivante** : reflet lumineux qui balaie la carte, ligne d'infos sous la carte (nombre de jeux, favoris, dernière partie).
-- **Jeu à la une** (option « Vidéo ») : au bout de 3 s sur un système, l'image du dernier jeu lancé apparaît avec une icône disque et son nom.
-- **Notification RetroAchievements** « connecté / déconnecté » en bas de l'écran, comme « signed in to Xbox LIVE ».
-- **Manettes connectées** en haut à droite, avec le pourcentage de batterie des manettes sans fil.
-- **Boucle des systèmes** (option) : désactivée, la liste a un début et une fin, comme sur le NXE.
-- **Effet cathodique** (option) : écran bombé, lignes de balayage, grille RGB (Léger / Fort / Désactivé).
-- **Sons de navigation** (dossier `sounds/`), **fonds d'écran** au choix, **français / anglais**.
+| | |
+|---|---|
+| **NXE green cards** | Six cards on screen, large selected card, floor reflections, "camera" zoom between systems |
+| **Staircase** *(option)* | Cards shrink step by step, exactly like the original dashboard |
+| **Profile card** | RetroAchievements username, points as a gamerscore, animated avatar, last 4 games played |
+| **Living card** | Light sheen across the selected card, rotating info line (games, favorites, last played) |
+| **Featured game** *(option)* | After 3 s on a system, the last game played appears with its disc and name |
+| **Marketplace-style game lists** | *Carousel* view: large box art with the next games shrinking away · *Grid* view: big tiles with video |
+| **Xbox LIVE style notifications** | RetroAchievements "signed in / signed out" toast |
+| **Controllers** | Connected pads at the top right, with battery level for wireless ones |
+| **Xbox 360 menus** | Light panel, green selection, Xenon font |
+| **Your own avatar** | Create it on 360sona and get an animated, transparent avatar in the theme |
+| **Extras** | 600+ wallpapers, navigation sounds, CRT effect, system loop on/off, English & French |
 
 ### Installation
 
-1. Dans EmulationStation : **Menu → Mises à jour et téléchargements → Thèmes → NXE360**.
-2. Réglages de l'interface → Thème → **NXE360**.
-3. Pour les fonctions du script (voir plus bas), une seule fois :
-   - copie le fichier **`NXE360 - Installation.sh`** du dossier du thème (`\\BATOCERA\share\themes\NXE360\`) dans `\\BATOCERA\share\roms\ports\` (réseau, FTP ou clé USB) ;
-   - **Menu → Mettre à jour la liste des jeux** ;
-   - lance **NXE360 - Installation** dans **Ports**. Le thème se prépare 1 à 2 minutes puis se recharge tout seul.
-   - (en SSH, à la place : `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`)
-4. Les options (langue, escalier, vidéo, boucle, effet cathodique, fond d'écran…) sont dans la **configuration du thème**.
+1. **Install the theme** — *Menu → Updates & Downloads → Themes → NXE360*
+2. **Select it** — *UI Settings → Theme → NXE360*
+3. **Enable the extra features** *(once)*
+   1. Copy `NXE360 - Installation.sh` from `\\BATOCERA\share\themes\NXE360\` to `\\BATOCERA\share\roms\ports\` (network share, FTP or USB stick)
+   2. *Menu → Update Gamelists*
+   3. Launch **NXE360 - Installation** from **Ports** — the theme prepares itself for 1–2 minutes, then reloads
 
-Les scripts sont dans le dossier du thème : une mise à jour du thème les met à jour aussi, et tes avatars 360sona sont gardés.
-Pour créer ton avatar : lance **360sona** dans Ports.
+   > Over SSH: `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`
 
-### Le script `nxe360_recent.sh`
+All options (language, staircase, video, loop, CRT, wallpaper…) are in **Theme Configuration**.
+To create your avatar, launch **360sona** from **Ports**.
 
-Le thème fonctionne sans lui, mais le script ajoute : les derniers jeux et les points RetroAchievements de la carte profil, les images de l'escalier, la notification de connexion, le jeu à la une (avec son nom), la boucle des systèmes désactivée et les sons gauche/droite des cartes.
-Il utilise le compte RetroAchievements déjà enregistré dans Batocera : il n'envoie rien ailleurs qu'à retroachievements.org, et aucun mot de passe n'est à saisir.
+### What the installation adds
+
+The theme works on its own. The included scripts add: recent games and RetroAchievements points on the profile card, staircase images, sign-in notifications, featured game names, the Marketplace-style game queue, the system loop option and left/right card sounds.
+
+- **Always up to date** — the scripts live inside the theme folder and are updated with it.
+- **Your avatars are safe** — they are backed up outside the theme and restored after each theme update.
+- **Privacy** — the script uses the RetroAchievements account already set up in Batocera, talks only to retroachievements.org, and never asks for a password.
+
+### Requirements
+
+| | Recommended |
+|---|---|
+| Batocera | Recent version (tested on the October 2026 development build) |
+| Display | 16:9 — 1080p or 4K (other ratios are stretched) |
+| Scraping | Box art, images and videos for the best result |
+| Small devices | On a Raspberry Pi or handheld, turn off the CRT effect and the staircase if the UI slows down |
+
+---
+
+## Français
+
+### Points forts
+
+| | |
+|---|---|
+| **Cartes vertes NXE** | Six cartes à l'écran, la carte sélectionnée en grand, reflets sur le sol, zoom « caméra » entre les systèmes |
+| **Escalier** *(option)* | Les cartes rétrécissent de marche en marche, comme sur le tableau de bord d'origine |
+| **Carte profil** | Pseudo RetroAchievements, points façon gamerscore, avatar animé, 4 derniers jeux joués |
+| **Carte vivante** | Reflet lumineux sur la carte sélectionnée, ligne d'infos (jeux, favoris, dernière partie) |
+| **Jeu à la une** *(option)* | Au bout de 3 s sur un système, le dernier jeu lancé apparaît avec son disque et son nom |
+| **Listes de jeux façon Marketplace** | Vue *Carousel* : grande jaquette et les jeux suivants qui rétrécissent · vue *Grille* : grandes tuiles avec vidéo |
+| **Notifications façon Xbox LIVE** | « Connecté / déconnecté » à RetroAchievements |
+| **Manettes** | Manettes connectées en haut à droite, avec la batterie des manettes sans fil |
+| **Menus Xbox 360** | Panneau clair, sélection verte, police Xenon |
+| **Ton avatar** | Crée-le sur 360sona et retrouve-le animé et détouré dans le thème |
+| **En plus** | Plus de 600 fonds d'écran, sons de navigation, effet cathodique, boucle des systèmes, français et anglais |
+
+### Installation
+
+1. **Installe le thème** — *Menu → Mises à jour et téléchargements → Thèmes → NXE360*
+2. **Choisis-le** — *Réglages de l'interface → Thème → NXE360*
+3. **Active les fonctions en plus** *(une seule fois)*
+   1. Copie `NXE360 - Installation.sh` de `\\BATOCERA\share\themes\NXE360\` vers `\\BATOCERA\share\roms\ports\` (réseau, FTP ou clé USB)
+   2. *Menu → Mettre à jour la liste des jeux*
+   3. Lance **NXE360 - Installation** dans **Ports** — le thème se prépare 1 à 2 minutes, puis se recharge
+
+   > En SSH : `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`
+
+Toutes les options (langue, escalier, vidéo, boucle, effet cathodique, fond d'écran…) sont dans la **Configuration du thème**.
+Pour créer ton avatar, lance **360sona** dans **Ports**.
+
+### Ce que l'installation ajoute
+
+Le thème fonctionne seul. Les scripts fournis ajoutent : les derniers jeux et les points RetroAchievements de la carte profil, l'escalier, les notifications de connexion, le nom du jeu à la une, la file de jaquettes façon Marketplace, l'option de boucle des systèmes et les sons gauche/droite.
+
+- **Toujours à jour** — les scripts sont dans le dossier du thème et se mettent à jour avec lui.
+- **Tes avatars sont protégés** — ils sont sauvegardés hors du thème et remis après chaque mise à jour.
+- **Vie privée** — le script utilise le compte RetroAchievements déjà réglé dans Batocera, ne parle qu'à retroachievements.org et ne demande jamais de mot de passe.
 
 ### Configuration conseillée
 
-- Batocera récent (testé sur la version de développement d'octobre 2026).
-- Écran 16:9 (1080p ou 4K). Les autres formats fonctionnent, mais l'image est étirée.
-- Sur une petite machine (Raspberry Pi…), désactive l'effet cathodique si l'interface ralentit.
+| | Conseillé |
+|---|---|
+| Batocera | Version récente (testé sur la version de développement d'octobre 2026) |
+| Écran | 16:9 — 1080p ou 4K (les autres formats sont étirés) |
+| Scraping | Jaquettes, images et vidéos pour le meilleur rendu |
+| Petites machines | Sur Raspberry Pi ou console portable, coupe l'effet cathodique et l'escalier si l'interface ralentit |
 
 ---
 
-## 🇬🇧 English
+## License
 
-### Features
+**NXE360** by **Blunpai** — [CC BY-NC-SA 4.0](LICENSE).
+Free to use, share and modify with credit to Blunpai, for non-commercial use, under the same license.
+*Libre d'utilisation, de partage et de modification en créditant Blunpai, sans usage commercial, sous la même licence.*
 
-- **NXE green cards**: 6 cards on screen, big selected card, floor reflections, "camera" zoom when changing system.
-- **Staircase** (option): cards shrink step by step, like the NXE.
-- **Profile card**: RetroAchievements username, points (gamerscore style), avatar and the last 4 games played.
-- **Living card**: light sheen sweeping the card, rotating info line (games, favorites, last played).
-- **Featured game** ("Video" option): after 3 s on a system, the last played game appears with a disc icon and its name.
-- **RetroAchievements notification** (signed in / signed out), like "signed in to Xbox LIVE".
-- **Connected controllers** at the top right, with battery level for wireless pads.
-- **System loop** (option): when off, the list has a start and an end, like the NXE.
-- **CRT effect** (option): curved screen, scanlines, RGB mask (Light / Strong / Off).
-- **Navigation sounds** (`sounds/` folder), selectable **wallpapers**, **French / English**.
-
-### Installation
-
-1. In EmulationStation: **Menu → Updates & downloads → Themes → NXE360**.
-2. UI settings → Theme → **NXE360**.
-3. For the script features (see below), once:
-   - copy **`NXE360 - Installation.sh`** from the theme folder (`\\BATOCERA\share\themes\NXE360\`) to `\\BATOCERA\share\roms\ports\` (network, FTP or USB stick);
-   - **Menu → Update games lists**;
-   - launch **NXE360 - Installation** from **Ports**. The theme prepares itself for 1-2 minutes, then reloads.
-   - (over SSH instead: `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`)
-4. Options (language, staircase, video, loop, CRT effect, wallpaper…) are in the **theme configuration**.
-
-The scripts live in the theme folder: updating the theme updates them too, and your 360sona avatars are kept.
-To create your avatar: launch **360sona** from Ports.
-
-### The `nxe360_recent.sh` script
-
-The theme works without it, but the script adds: recent games and RetroAchievements points on the profile card, staircase images, sign-in notification, featured game (with its name), system loop off and left/right card sounds.
-It uses the RetroAchievements account already saved in Batocera: it only talks to retroachievements.org, and no password has to be entered.
-
----
-
-## Licence / License
-
-**CC BY-NC-SA 4.0**: tu peux utiliser, partager et modifier ce thème gratuitement, en créditant Blunpai, sans usage commercial, et en gardant la même licence pour les versions modifiées. Voir [LICENSE](LICENSE).
-*Free to use, share and modify, crediting Blunpai, non-commercial, same license for modified versions.*
-
-Xbox, Xbox 360 et le design NXE sont des marques et créations de Microsoft. Ce thème est un projet de fan gratuit, sans lien avec Microsoft. Les sons, polices, fonds d'écran et visuels de jeux appartiennent à leurs propriétaires respectifs.
-*Xbox, Xbox 360 and the NXE design are trademarks/works of Microsoft. This is a free fan project, not affiliated with Microsoft.*
+<sub>Xbox, Xbox 360 and the NXE design are trademarks and works of Microsoft. NXE360 is a free fan project, not affiliated with or endorsed by Microsoft. Sounds, fonts, wallpapers and game artwork belong to their respective owners.</sub>
