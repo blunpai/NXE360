@@ -69,6 +69,8 @@
         <!-- LES 3 PHRASES DE LA BULLE (la 1re devient « Salut <ton pseudo> ! ») -->
         <bubbleHello>Salut</bubbleHello>
         <bubbleText2>Bienvenue sur ma Xbox 360.</bubbleText2>
+        <bubbleSetup2>Active les bonus NXE360 :</bubbleSetup2>
+        <bubbleSetup3>copie l'installeur dans Ports</bubbleSetup3>
         <bubbleText3>Amuse-toi bien !</bubbleText3>
         <carouselViewName>Carousel</carouselViewName>
         <wpNum>01</wpNum>
@@ -1398,8 +1400,25 @@
                 <animation property="opacity" from="1" to="0" begin="8000" duration="400" mode="EaseIn"/>
             </storyboard>
         </image>
-        <text name="avatar_bubble_text_2" extra="true" if="${system.theme} == ${profileTheme}">
+        <!-- script pas encore installé : la bulle dit comment l'activer -->
+        <text name="avatar_bubble_text_2" extra="true" if="${system.theme} == ${profileTheme} &amp;&amp; exists(${themePath} + &quot;/art/avatar/.nxe360_ok&quot;)">
             <text>${bubbleText2}</text>
+            <pos>0.0948 0.3258</pos>
+            <size>0.1799 0.0312</size>
+            <alignment>center</alignment>
+            <fontPath>${mainFont}</fontPath>
+            <fontSize>0.019</fontSize>
+            <lineSpacing>1.2</lineSpacing>
+            <color>1A1A1AFF</color>
+            <zIndex>59</zIndex>
+            <storyboard>
+                <animation property="opacity" from="0" to="0" begin="0" duration="5200"/>
+                <animation property="opacity" from="0" to="1" begin="5200" duration="400" mode="EaseOut"/>
+                <animation property="opacity" from="1" to="0" begin="8000" duration="400" mode="EaseIn"/>
+            </storyboard>
+        </text>
+        <text name="avatar_bubble_setup_2" extra="true" if="${system.theme} == ${profileTheme} &amp;&amp; !exists(${themePath} + &quot;/art/avatar/.nxe360_ok&quot;)">
+            <text>${bubbleSetup2}</text>
             <pos>0.0948 0.3258</pos>
             <size>0.1799 0.0312</size>
             <alignment>center</alignment>
@@ -1429,8 +1448,24 @@
                 <animation property="opacity" from="1" to="0" begin="12000" duration="400" mode="EaseIn"/>
             </storyboard>
         </image>
-        <text name="avatar_bubble_text_3" extra="true" if="${system.theme} == ${profileTheme}">
+        <text name="avatar_bubble_text_3" extra="true" if="${system.theme} == ${profileTheme} &amp;&amp; exists(${themePath} + &quot;/art/avatar/.nxe360_ok&quot;)">
             <text>${bubbleText3}</text>
+            <pos>0.0948 0.3258</pos>
+            <size>0.1799 0.0312</size>
+            <alignment>center</alignment>
+            <fontPath>${mainFont}</fontPath>
+            <fontSize>0.019</fontSize>
+            <lineSpacing>1.2</lineSpacing>
+            <color>1A1A1AFF</color>
+            <zIndex>59</zIndex>
+            <storyboard>
+                <animation property="opacity" from="0" to="0" begin="0" duration="9200"/>
+                <animation property="opacity" from="0" to="1" begin="9200" duration="400" mode="EaseOut"/>
+                <animation property="opacity" from="1" to="0" begin="12000" duration="400" mode="EaseIn"/>
+            </storyboard>
+        </text>
+        <text name="avatar_bubble_setup_3" extra="true" if="${system.theme} == ${profileTheme} &amp;&amp; !exists(${themePath} + &quot;/art/avatar/.nxe360_ok&quot;)">
+            <text>${bubbleSetup3}</text>
             <pos>0.0948 0.3258</pos>
             <size>0.1799 0.0312</size>
             <alignment>center</alignment>
