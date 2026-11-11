@@ -1266,6 +1266,19 @@
                 <animation property="opacity" from="0" to="1" begin="8900" duration="250"/>
             </storyboard>
         </text>
+        <!-- script pas encore installé : la ligne sous la carte dit comment l'activer (sur tous les systèmes) -->
+        <text name="setup_hint" extra="true" if="!exists(${themePath} + &quot;/art/avatar/.nxe360_ok&quot;)">
+            <text>${bubbleSetup2} ${bubbleSetup3}</text>
+            <pos>0.0758 0.8580</pos>
+            <origin>0 0.5</origin>
+            <size>0.6000 0.0320</size>
+            <alignment>left</alignment>
+            <verticalAlignment>center</verticalAlignment>
+            <fontPath>${mainFont}</fontPath>
+            <fontSize>0.0230</fontSize>
+            <color>474F51C0</color>
+            <zIndex>57</zIndex>
+        </text>
         <text name="card_info_favs" extra="true" if="((${system.name} != ${loopFirst} &amp;&amp; ${system.name} != ${loopLast}) || ${stairLoop} != 'off')">
             <text>{system:favorites} == 1 ? "1 ${favWordOne}" : "" + {system:favorites} + " ${favWordMany}"</text>
             <pos>0.0758 0.8139</pos>
