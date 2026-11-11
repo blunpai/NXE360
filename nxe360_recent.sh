@@ -2782,6 +2782,7 @@ if action == "watch":
             log(f"manettes : {e!r}")
         SPOT["done"] = True
         GS["sig"] = None                    # file de jaquettes : préparée par la boucle ci-dessous (dans les 10 s)
+    GONE = [0]
     GS = {"sig": "attente", "thread": None}   # "attente" : jusqu'à la fin des images « jeu à la une » ; None : à faire
     def _gs_bg():                           # file de jaquettes de la vue Carousel (pas besoin de recharger ES)
         sig, GS["sig"] = gstack_sig(), None     # reste None (à refaire) si ES est injoignable ou en cas d'erreur
@@ -2842,7 +2843,9 @@ if action == "watch":
             log("dossier du thème remplacé (mise à jour) : avatars remis et images refaites")
             subprocess.Popen(["bash", SELF_PATH, "refresh"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                              stderr=subprocess.DEVNULL, start_new_session=True)
-        if tick % 150 == 0 and not theme_active():
+        if tick % 150 == 0:                 # thème supprimé (absent 2 fois de suite, 30 s d'écart) : on s'arrête
+            GONE[0] = 0 if os.path.isfile(os.path.join(theme_dir, "theme.xml")) else GONE[0] + 1
+        if tick % 150 == 0 and (not theme_active() or GONE[0] >= 2):
             toast_off()
             nl.stop()
             nav.stop()
