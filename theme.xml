@@ -85,10 +85,6 @@
         <subset.background>Theme</subset.background>
         <subset.cardvideo>Vidéo</subset.cardvideo>
         <subset.language>Langue / Language</subset.language>
-        <!-- ESCALIER : cartes qui rétrécissent de marche en marche (option du thème, désactivée par défaut) -->
-        <subset.stairs>Escalier</subset.stairs>
-        <stairsOff>Désactivé</stairsOff>
-        <stairsOn>Activé</stairsOn>
         <!-- option « Boucle des systèmes » (Désactivée = la liste a un début et une fin, comme sur le NXE) -->
         <subset.loop>Boucle des systèmes</subset.loop>
         <loopOff>Désactivée</loopOff>
@@ -116,7 +112,6 @@
         <stairLang>fr</stairLang>
         <stairLoop>off</stairLoop>
         <stairVideo>video_on</stairVideo>
-        <stairsSel>off</stairsSel>
         <!-- écrits par le script dans art/stair/ready.xml (valeurs par défaut pour un script plus ancien) -->
         <stairVar>v1</stairVar>
         <stairFavN1>-</stairFavN1><stairFavL1>-</stairFavL1><stairAv1Pos>0 0</stairAv1Pos><stairAv1Size>0 0</stairAv1Size>
@@ -131,8 +126,6 @@
     <variables ifSubset="loop:off"><stairLoop>off</stairLoop></variables>
     <variables ifSubset="cardvideo:Désactiver Vidéo"><stairVideo>video_off</stairVideo></variables>
     <variables ifSubset="cardvideo:Activer Vidéo"><stairVideo>video_on</stairVideo></variables>
-    <variables ifSubset="stairs:on"><stairsSel>on</stairsSel></variables>
-    <variables ifSubset="stairs:off"><stairsSel>off</stairsSel></variables>
     <!-- EFFET CATHODIQUE : réglages de chaque choix (le DERNIER bloc = choix par défaut : Désactivé, pour les petites machines) -->
     <variables ifSubset="crt:fort">
         <crtMode>on</crtMode><crtCurv>0.11</crtCurv><crtScan>0.55</crtScan><crtLines>360</crtLines><crtMask>0.22</crtMask>
@@ -1696,7 +1689,7 @@
                  les remplace. L'escalier de la carte quittée disparaît d'un coup.
                  Utilisé seulement quand l'option Escalier est activée ET que nxe360_recent.sh a préparé les images
                  (art/stair/ready.xml avec stairCam = on). Sinon, le modèle d'origine ci-dessous s'applique. -->
-            <itemTemplate if="exists(${themePath} + &quot;/art/stair/ready.xml&quot;) &amp;&amp; ${stairCam} == 'on' &amp;&amp; ${stairsSel} == 'on'" ifSubset="stairs:on">
+            <itemTemplate if="exists(${themePath} + &quot;/art/stair/ready.xml&quot;) &amp;&amp; ${stairCam} == 'on'">
                 <!-- ===== ESCALIER PORTÉ PAR LA CARTE (effet caméra) =====
                      Image des marches de CE système (écrite par nxe360_recent.sh), accrochée à la carte : le moteur la
                      déplace, la zoome et la fond avec elle, dans le bon sens (à droite comme à gauche). Dessinée en
@@ -3605,10 +3598,9 @@
         <text name="systemInfo"><visible>false</visible></text>
     </view>
 
-    <!-- ESCALIER : option « Escalier » de la configuration du thème (Désactivé par défaut = 1er de la liste).
-         Activé : voir subsets/escalier/on.xml. Doit rester APRÈS la vue « system » ci-dessus (il la complète). -->
-    <include subset="stairs" name="off" displayName="${stairsOff}">./subsets/escalier/off.xml</include>
-    <include subset="stairs" name="on" displayName="${stairsOn}">./subsets/escalier/on.xml</include>
+    <!-- ESCALIER : toujours actif dès que le script a préparé ses images (art/stair/ready.xml) ; sans le script, le
+         carrousel reste celui d'origine. Voir subsets/escalier/on.xml. Doit rester APRÈS la vue « system » ci-dessus. -->
+    <include>./subsets/escalier/on.xml</include>
 
     <!-- BOUCLE DES SYSTÈMES : option « Boucle des systèmes » de la configuration du thème (Désactivée par défaut = 1er de
          la liste). EmulationStation fait toujours le tour de la liste ; désactivée, nxe360_recent.sh ramène le carrousel
@@ -4322,6 +4314,10 @@
             <imageSizeMode>minSize</imageSizeMode>
             <imageColor>FFFFFFFF</imageColor>
         </gridtile>
+        <!-- coins arrondis comme la carte verte (rayon = 0,9 % de la largeur de la tuile ; la vidéo reprend le même) -->
+        <image name="gridtile.image">
+            <roundCorners>0.009</roundCorners>
+        </image>
             <!-- ===== NOM DU JEU + ICÔNE DISQUE sur la grande tuile (comme le « jeu à la une » de l'accueil) =====
              Placés sur la grande tuile, qui occupe la place de la grande carte verte (0.0749 0.3458, 0.3265 x 0.4404) :
              voile sombre en bas (lisibilité), icône disque à la place de l'icône du système, nom du jeu à la place du
@@ -4333,6 +4329,7 @@
             <path>./art/card_shade.png</path>
             <pos>0.0749 0.3458</pos>
             <size>0.3265 0.4404</size>
+            <roundCorners>0.009</roundCorners>
             <zIndex>50</zIndex>
             <storyboard event="activate">
                 <animation property="opacity" from="0" to="0" duration="130"/>

@@ -81,6 +81,36 @@ NAVGAME_HOOK="$ES_SCRIPTS/game-selected/nxe360_nav.sh"         # liste des jeux 
 NAVSAVER_START="$ES_SCRIPTS/screensaver-start/nxe360_nav.sh"   # l'économiseur d'écran choisit des jeux : ne compte pas
 NAVSAVER_STOP="$ES_SCRIPTS/screensaver-stop/nxe360_nav.sh"
 
+# --- 0) fin de « NXE360 - Installation » ---------------------------------------
+# L'installateur, lancé depuis Ports, ne doit rien laisser tourner derrière lui : Batocera attendrait que tout soit fini
+# avant de rendre la main, et l'écran de lancement resterait affiché. Il laisse donc sa fenêtre dans un fichier ;
+# à la fin du port (événement gameStop, ou tout de suite en SSH), on l'affiche ici, puis on prépare le thème.
+INSTALL_MSG="$DATA_DIR/install_msg.txt"; INSTALL_NOTES="$DATA_DIR/install_notes.txt"
+if [ "$1" = "installdone" ]; then
+    API=http://127.0.0.1:1234
+    for i in $(seq 60); do                         # retour dans EmulationStation : plus aucun jeu en cours (60 s au plus)
+        [ "$(curl -s -m 2 -o /dev/null -w "%{http_code}" "$API/runningGame")" = 201 ] && break
+        sleep 1
+    done
+    sleep 2
+    [ -f "$INSTALL_MSG" ] && curl -s -m 3 -X POST --data-binary "@$INSTALL_MSG" "$API/messagebox" >/dev/null
+    if [ -f "$INSTALL_NOTES" ]; then               # installation réussie : préparation du thème, avec son avancement
+        { read -r n1; read -r n2; } < "$INSTALL_NOTES"
+        rm -f "$INSTALL_MSG" "$INSTALL_NOTES"
+        curl -s -m 3 -X POST --data-binary "$n1" "$API/notify" >/dev/null
+        bash "$SELF" refresh
+        curl -s -m 3 -X POST --data-binary "$n2" "$API/notify" >/dev/null
+        sleep 3
+        curl -s -m 5 "$API/reloadgames" >/dev/null
+    fi
+    rm -f "$INSTALL_MSG" "$INSTALL_NOTES"
+    exit 0
+fi
+if [ "$1" = "gameStop" ] && [ -f "$INSTALL_MSG" ]; then
+    setsid bash "$SELF" installdone </dev/null >/dev/null 2>&1 &
+    [ -f "$INSTALL_NOTES" ] || exit 0              # installation refusée (thème pas actif) : seulement la fenêtre
+fi
+
 # --- 1) seulement si le thème NXE360 est le thème actif -----------------------
 active=$(grep -o 'name="ThemeSet" value="[^"]*"' "$ES_SETTINGS" 2>/dev/null | sed 's/.*value="//;s/"$//')
 if [ -n "$THEME_NAME" ]; then
@@ -758,9 +788,6 @@ def es_setting(name, default=""):
     except OSError:
         return default
     return m.group(1) if m else default
-
-def stairs_enabled():
-    return es_setting("subset.stairs", "off") == "on"
 
 _LOOP_THEME = {}
 
@@ -2086,7 +2113,7 @@ class StairWatch:
             return
         self.proc = None
         if rc == 10:
-            self.reload_due = stairs_enabled()                   # escalier coupé : rien d'affiché, rien à recharger
+            self.reload_due = True                               # nouvelles images : ES recharge le thème
         elif rc in (2, 3):                                       # ES pas encore prêt / jeu en cours : on réessaie
             self.want, self.not_before = True, time.time() + 15
         elif rc == 1:                                            # Pillow absente, police introuvable... : on ne harcèle pas
@@ -2783,7 +2810,7 @@ if action == "watch":
     nav.tick()
     if nav.flag_new:
         sw.reload_due = True                # le thème doit être relu une fois pour couper son son de défilement unique
-    if stairs_sync_variant() and stairs_enabled():
+    if stairs_sync_variant():
         sw.reload_due = True                # connecté / déconnecté a changé depuis la dernière session : rechargement dès qu'ES est prêt
     rec_changed = recording_previews()      # aperçus des enregistrements manquants (une fois par démarrage)
     log(f"surveillance RetroAchievements lancée ({'activé' if last[0] else 'désactivé'}, "
@@ -2914,7 +2941,7 @@ if action == "refresh":
         log(f"file de jaquettes : {e!r}")
     _sy = stair_systems()
     _profile = profile_sync(_sy) if _sy else False               # carte profil : Xbox 360 si présent, sinon Favoris
-    if (stairs_run() == 10 and stairs_enabled()) or _profile:
+    if stairs_run() == 10 or _profile:
         reload_es(0)                            # nouvelles images de l'escalier : ES recharge le thème pour les afficher
 PYEOF
 PYRC=$?

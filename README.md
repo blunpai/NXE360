@@ -26,7 +26,7 @@
 | | |
 |---|---|
 | **NXE green cards** | Six cards on screen, large selected card, floor reflections, "camera" zoom between systems |
-| **Staircase** *(option)* | Cards shrink step by step, exactly like the original dashboard |
+| **Staircase** | Cards shrink step by step, exactly like the original dashboard (with the installed scripts) |
 | **Profile card** | RetroAchievements username, points as a gamerscore, animated avatar, last 4 games played |
 | **Living card** | Light sheen across the selected card, rotating info line (games, favorites, last played) |
 | **Featured game** *(option)* | After 3 s on a system, the last game played appears with its disc and name |
@@ -48,7 +48,7 @@
 
    > Over SSH: `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`
 
-All options (language, staircase, video, loop, CRT, wallpaper…) are in **Theme Configuration**.
+All options (language, video, loop, CRT, wallpaper…) are in **Theme Configuration**.
 To create your avatar, launch **360sona** from **Ports**.
 
 ### What the installation adds
@@ -66,7 +66,7 @@ The theme works on its own. The included scripts add: recent games and RetroAchi
 | Batocera | Recent version (tested on the October 2026 development build) |
 | Display | 16:9 — 1080p or 4K (other ratios are stretched) |
 | Scraping | Box art, images and videos for the best result |
-| Small devices | On a Raspberry Pi or handheld, turn off the CRT effect and the staircase if the UI slows down |
+| Small devices | On a Raspberry Pi or handheld, turn off the CRT effect if the UI slows down |
 
 ---
 
@@ -77,7 +77,7 @@ The theme works on its own. The included scripts add: recent games and RetroAchi
 | | |
 |---|---|
 | **Cartes vertes NXE** | Six cartes à l'écran, la carte sélectionnée en grand, reflets sur le sol, zoom « caméra » entre les systèmes |
-| **Escalier** *(option)* | Les cartes rétrécissent de marche en marche, comme sur le tableau de bord d'origine |
+| **Escalier** | Les cartes rétrécissent de marche en marche, comme sur le tableau de bord d'origine (avec les scripts installés) |
 | **Carte profil** | Pseudo RetroAchievements, points façon gamerscore, avatar animé, 4 derniers jeux joués |
 | **Carte vivante** | Reflet lumineux sur la carte sélectionnée, ligne d'infos (jeux, favoris, dernière partie) |
 | **Jeu à la une** *(option)* | Au bout de 3 s sur un système, le dernier jeu lancé apparaît avec son disque et son nom |
@@ -99,7 +99,7 @@ The theme works on its own. The included scripts add: recent games and RetroAchi
 
    > En SSH : `bash "/userdata/themes/NXE360/NXE360 - Installation.sh"`
 
-Toutes les options (langue, escalier, vidéo, boucle, effet cathodique, fond d'écran…) sont dans la **Configuration du thème**.
+Toutes les options (langue, vidéo, boucle, effet cathodique, fond d'écran…) sont dans la **Configuration du thème**.
 Pour créer ton avatar, lance **360sona** dans **Ports**.
 
 ### Ce que l'installation ajoute
@@ -117,7 +117,7 @@ Le thème fonctionne seul. Les scripts fournis ajoutent : les derniers jeux et l
 | Batocera | Version récente (testé sur la version de développement d'octobre 2026) |
 | Écran | 16:9 — 1080p ou 4K (les autres formats sont étirés) |
 | Scraping | Jaquettes, images et vidéos pour le meilleur rendu |
-| Petites machines | Sur Raspberry Pi ou console portable, coupe l'effet cathodique et l'escalier si l'interface ralentit |
+| Petites machines | Sur Raspberry Pi ou console portable, coupe l'effet cathodique si l'interface ralentit |
 
 ---
 
