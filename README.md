@@ -3,9 +3,17 @@
 # NXE360 THEME FOR BATOCERA
 **INSPIRED BY XBOX360**
 
+
+
 ![Batocera](https://img.shields.io/badge/Batocera-EmulationStation-107C10?style=for-the-badge)
 
+
+
+
+
 ![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=for-the-badge)
+
+
 
 [How to install](#how-to-install) · [Requirements](#requirements-1-gb-vram-in-emulationstation) · [Avatar](#how-to-change-my-avatar) · [License](#license)
 
@@ -31,6 +39,12 @@
 1. Download the theme zip and extract it in the **themes** folder of your Batocera.
 2. Then put the script `NXE360 - Installation.sh` in the **ports** roms folder and start the script.
 3. After 2 min, the theme is ready.
+
+Or by SSH:
+
+```
+mv "/userdata/themes/NXE360/NXE360 - Installation.sh" /userdata/roms/ports/
+```
 
 <hr>
 
