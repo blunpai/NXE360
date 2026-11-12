@@ -4224,6 +4224,13 @@
         <!-- SANS LA FILE (script pas encore lancé, thème tout juste installé ou mis à jour, tri non reproduit) : pas de dossier
              art/gstack/<système> -> les jaquettes suivantes de la grille restent visibles, avec le nom écrit sur les
              cartouches comme d'habitude dans ES. Le script recharge ES quand ce dossier apparaît ou disparaît. -->
+        <!-- PS3 (boîtier Blu-ray, plus large qu'un DVD) : jaquettes toujours à la hauteur de la carte, mais tuiles plus
+             espacées pour garder le même écart qu'en Xbox 360. Même grille, pas de 0.1796 au lieu de 0.1520 ; position et
+             largeur recalculées (le padding reste < 1, sinon ES le lit en pixels) pour que la jaquette sélectionnée reste au bord gauche de la grande carte. -->
+        <imagegrid name="gamegrid" if="${system.name} == 'ps3' &amp;&amp; !exists(${themePath} + &quot;/art/gstack/&quot; + ${system.name})">
+            <pos>-0.08596 0.3448</pos>
+            <size>1.42200 0.5904</size>
+        </imagegrid>
         <gridtile name="default" if="!exists(${themePath} + &quot;/art/gstack/&quot; + ${system.name})">
             <imageColor>FFFFFFFF</imageColor>
         </gridtile>
