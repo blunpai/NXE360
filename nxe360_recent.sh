@@ -135,6 +135,13 @@ case "$1" in
     stairs)    action="stairs" ;;     # images de l'escalier (lancé par la surveillance)
     *) exit 0 ;;
 esac
+# Début / fin de jeu : Batocera attend la fin de ce script avant de lancer le jeu ou de revenir au menu.
+# On lui rend donc la main tout de suite et le travail (images, RetroAchievements) se fait en arrière-plan.
+if { [ "$action" = "start" ] || [ "$action" = "stop" ]; } && [ -z "$NXE360_BG" ]; then
+    export NXE360_BG=1
+    detach bash "$SELF" "$@"
+    exit 0
+fi
 
 mkdir -p "$DATA_DIR" "$THEME_DIR/art/recent"
 
