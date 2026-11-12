@@ -11,6 +11,9 @@
 
 </div>
 
+
+https://raw.githubusercontent.com/blunpai/NXE360/refs/heads/main/docs/screenshot-2026.11.12-19h05.14.png
+
 <hr>
 
 ## How to install?
