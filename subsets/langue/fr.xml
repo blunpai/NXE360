@@ -22,9 +22,6 @@
         <favWordMany>favoris</favWordMany>
         <lastPlayedWord>Dernière partie :</lastPlayedWord>
         <neverPlayedWord>Jamais lancé</neverPlayedWord>
-        <subset.stairs>Escalier</subset.stairs>
-        <stairsOff>Désactivé</stairsOff>
-        <stairsOn>Activé</stairsOn>
         <subset.loop>Boucle des systèmes</subset.loop>
         <loopOff>Désactivée</loopOff>
         <loopOn>Activée</loopOn>

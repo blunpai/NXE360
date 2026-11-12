@@ -22,9 +22,6 @@
         <favWordMany>favorites</favWordMany>
         <lastPlayedWord>Last played:</lastPlayedWord>
         <neverPlayedWord>Never played</neverPlayedWord>
-        <subset.stairs>Stairs</subset.stairs>
-        <stairsOff>Disabled</stairsOff>
-        <stairsOn>Enabled</stairsOn>
         <subset.loop>Systems loop</subset.loop>
         <loopOff>Disabled</loopOff>
         <loopOn>Enabled</loopOn>

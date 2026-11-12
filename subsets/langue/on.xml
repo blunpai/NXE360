@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Escalier (toujours actif quand le script a préparé ses images) : cartes qui rétrécissent de marche en marche,
+     comme sur le NXE, + EFFET CAMÉRA.
+
+     Principe : ES ne sait pas rétrécir les cartes une à une. Le script nxe360_recent.sh prépare donc, pour
+     chaque système, UNE image (art/stair/g<N>/on|off/<système>.png) qui montre les cartes suivantes déjà rétrécies.
+     « on » / « off » = carte Favoris connectée / déconnectée (les deux sont préparées ; stairOnline, écrit dans
+     ready.xml, dit laquelle afficher).
+
+     EFFET CAMÉRA (script à jour : stairCam = on dans ready.xml) :
+       l'image des marches de chaque système est accrochée à la carte de ce système (modèle « effet caméra » de
+       theme.xml). Quand on appuie sur droite, la carte quittée se fond vers la gauche pendant que la caméra zoome
+       d'un coup sur la carte suivante, qui devient la grande carte (les marches suivent) ; vers la gauche, c'est
+       l'inverse. Le carrousel ne dessine plus ses cartes voisines : l'image des marches les remplace.
+       Ici on règle seulement le carrousel : largeur de la zone, plus aucun décalage ni transparence des voisines
+       (elles sont cachées par le modèle), et une animation plus vive (200 ms au lieu de 350 ms).
+
+     ANCIEN FONCTIONNEMENT (script plus ancien, stairCam absent) : l'image des marches est affichée derrière le
+     carrousel, fixe, et se fond dans celle du système suivant. Ce bloc reste là pour qu'un thème mis à jour avant le
+     script continue de fonctionner.
+
+     Tant que le script n'a pas fini de préparer les images (art/stair/ready.xml absent), ce fichier ne fait RIEN :
+     le carrousel d'origine continue de s'afficher normalement. -->
+<theme>
+    <formatVersion>7</formatVersion>
+    <variables>
+        <stairs>on</stairs>
+    </variables>
+
+    <!-- ===== EFFET CAMÉRA ===== -->
+    <view name="system" if="exists(${themePath} + &quot;/art/stair/ready.xml&quot;) &amp;&amp; ${stairCam} == 'on'" extraTransition="fade &amp; slide" extraTransitionSpeed="350">
+        <carousel name="systemcarousel">
+            <!-- Largeur de la zone : 6 cartes jointives (valeur écrite par le script, calculée avec les réglages du
+                 carrousel de theme.xml). Elle donne l'écart entre deux cartes : la carte qui arrive part exactement
+                 de la 1re marche de l'image. Cette zone est aussi celle où le moteur découpe l'image : elle doit rester
+                 assez large pour contenir toutes les marches. -->
+            <size>${stairCarouselSize}</size>
+            <!-- Plus de décalage supplémentaire : le moteur ne rapproche ni n'écarte les cartes voisines. -->
+            <scaledLogoSpacing>0</scaledLogoSpacing>
+            <!-- Plus de transparence automatique selon la distance : chaque morceau de la carte gère son propre fondu
+                 (voir le modèle « effet caméra » de theme.xml). -->
+            <minLogoOpacity>0</minLogoOpacity>
+            <!-- Durée du déplacement de la caméra. Le moteur démarre très vite puis ralentit : l'essentiel du zoom se
+                 fait dans les premières images (« d'un coup »). -->
+            <transitionSpeed>200</transitionSpeed>
+        </carousel>
+    </view>
+
+    <!-- ===== ANCIEN FONCTIONNEMENT (script plus ancien) ===== -->
+    <!-- extraTransition « fade & slide » : l'image de l'ancien système se fond dans celle du nouveau
+         (au lieu de traverser l'écran). Les autres éléments de la vue passent aussi en fondu. -->
+    <view name="system" if="exists(${themePath} + &quot;/art/stair/ready.xml&quot;) &amp;&amp; ${stairCam} != 'on'" extraTransition="fade &amp; slide" extraTransitionSpeed="350">
+        <carousel name="systemcarousel">
+            <!-- Les cartes voisines sont repoussées hors de l'écran (décalage énorme) : seule la carte sélectionnée
+                 (et la carte qui arrive) reste visible. La largeur vient du script (stairCarouselSize, calculée avec
+                 les réglages du carrousel de theme.xml) : la carte qui arrive part exactement de la 1re marche de l'image. -->
+            <size>${stairCarouselSize}</size>
+            <!-- Ce décalage doit être TRÈS grand. Pendant un défilement, ES dessine aussi des cartes du bout opposé de la
+                 liste (liste circulaire) et les range du mauvais côté : avec un décalage de 50, la carte d'un système du
+                 milieu de la liste revenait à l'écran un instant, à droite, par-dessus les marches, quand on passait de
+                 la dernière carte à la première. Avec 300, ces cartes sont repoussées bien trop loin pour apparaître,
+                 quel que soit le nombre de systèmes. -->
+            <scaledLogoSpacing>300</scaledLogoSpacing>
+        </carousel>
+        <!-- image des marches du système (écrite par le script ; stairGen/stairOnline/stairPos/stairSize viennent de art/stair/ready.xml) -->
+        <image name="stair_steps" extra="true">
+            <path>./art/stair/${stairGen}/${stairOnline}/${system.name}.png</path>
+            <pos>${stairPos}</pos>
+            <size>${stairSize}</size>
+            <zIndex>49</zIndex>
+        </image>
+    </view>
+</theme>
