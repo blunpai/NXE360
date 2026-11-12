@@ -63,15 +63,29 @@ fi
 python3 -c "import PIL" 2>/dev/null && R+=$(ok "Python + Pillow")$'\n' || R+=$(ko "$(t "Pillow absent : escalier et jaquettes désactivés" "Pillow missing: staircase and box art disabled")")$'\n'
 command -v ffmpeg >/dev/null && R+=$(ok "ffmpeg")$'\n' || R+=$(ko "$(t "ffmpeg absent : miniatures des vidéos désactivées" "ffmpeg missing: video thumbnails disabled")")$'\n'
 
-msgbox "$(t "NXE360 - INSTALLATION" "NXE360 - SETUP")
+MSG="$(t "NXE360 - INSTALLATION" "NXE360 - SETUP")
 
 $R
 $(t "Le thème se prépare maintenant (1 à 2 minutes).
 Suis l'avancement dans les notifications ; il se recharge tout seul à la fin." "The theme is now preparing itself (1-2 minutes).
 Follow the notifications; it reloads by itself when done.")"
 
-# préparation en arrière-plan, avec l'avancement à l'écran, puis liste des jeux rechargée
-N1=$(t "NXE360 : préparation du thème..." "NXE360: preparing the theme...")
-N2=$(t "NXE360 : prêt ✔ rechargement du thème" "NXE360: ready ✔ reloading the theme")
-setsid bash -c "sleep 3; curl -s -m 3 -X POST --data-binary '$N1' $API/notify; bash '$U/system/scripts/nxe360_recent.sh' refresh; curl -s -m 3 -X POST --data-binary '$N2' $API/notify; sleep 3; curl -s -m 5 $API/reloadgames" </dev/null >/dev/null 2>&1 &
+# Pendant un port, EmulationStation est caché derrière l'écran de lancement : ce qu'on lui envoie maintenant serait perdu.
+# La suite tourne donc en arrière-plan, attend le retour dans EmulationStation, puis affiche la fenêtre et l'avancement.
+export MSG API U
+export N1="$(t "NXE360 : préparation du thème..." "NXE360: preparing the theme...")"
+export N2="$(t "NXE360 : prêt ✔ rechargement du thème" "NXE360: ready ✔ reloading the theme")"
+setsid bash -c '
+    for i in $(seq 60); do                               # au plus 60 s : retour dans ES = plus aucun jeu en cours
+        [ "$(curl -s -m 2 -o /dev/null -w "%{http_code}" "$API/runningGame")" = 201 ] && break
+        sleep 1
+    done
+    sleep 2
+    curl -s -m 3 -X POST --data-binary "$MSG" "$API/messagebox"
+    curl -s -m 3 -X POST --data-binary "$N1" "$API/notify"
+    bash "$U/system/scripts/nxe360_recent.sh" refresh
+    curl -s -m 3 -X POST --data-binary "$N2" "$API/notify"
+    sleep 3
+    curl -s -m 5 "$API/reloadgames"
+' </dev/null >/dev/null 2>&1 &
 exit 0
