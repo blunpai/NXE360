@@ -10,9 +10,19 @@
 [How to install](#how-to-install) · [Requirements](#requirements-1-gb-vram-in-emulationstation) · [Avatar](#how-to-change-my-avatar) · [License](#license)
 
 </div>
+<p align="center">
+  <img src="docs/screenshot-2026.11.06-21h43.42.png" width="100%">
+</p>
 
-
-https://raw.githubusercontent.com/blunpai/NXE360/refs/heads/main/docs/screenshot-2026.11.12-19h05.14.png
+<table>
+  <tr>
+    <td><img src="docs/screenshot-2026.11.12-19h08.00.png"></td>
+    <td><img src="docs/screenshot-2026.11.12-19h07.26.png"></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshot-2026.11.12-19h05.14.png"></td>
+  </tr>
+</table>
 
 <hr>
 
