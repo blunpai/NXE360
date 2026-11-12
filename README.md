@@ -1,6 +1,6 @@
 <div align="center">
 
-# DASHBOARD NXE360
+# NXE360 THEMR FOR BATOCERA
 
 **INSPIRED BY XBOX360**
 
