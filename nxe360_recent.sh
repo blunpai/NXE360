@@ -81,10 +81,19 @@ NAVGAME_HOOK="$ES_SCRIPTS/game-selected/nxe360_nav.sh"         # liste des jeux 
 NAVSAVER_START="$ES_SCRIPTS/screensaver-start/nxe360_nav.sh"   # l'économiseur d'écran choisit des jeux : ne compte pas
 NAVSAVER_STOP="$ES_SCRIPTS/screensaver-stop/nxe360_nav.sh"
 
+# Lance une commande complètement détachée : nouvelle session et AUCUN descripteur hérité. Sans ça, un programme
+# lancé pendant un jeu ou un port garderait ouvert un tuyau de batocera-launch, qui attendrait sa fin : l'écran de
+# lancement resterait affiché.
+detach() {
+    ( for f in /proc/$BASHPID/fd/*; do n=${f##*/}; [ "$n" -gt 2 ] 2>/dev/null && eval "exec $n>&-"; done
+      exec setsid "$@" </dev/null >/dev/null 2>&1 ) &
+}
+
 # --- 0) fin de « NXE360 - Installation » ---------------------------------------
 # L'installateur, lancé depuis Ports, ne doit rien laisser tourner derrière lui : Batocera attendrait que tout soit fini
 # avant de rendre la main, et l'écran de lancement resterait affiché. Il laisse donc sa fenêtre dans un fichier ;
-# à la fin du port (événement gameStop, ou tout de suite en SSH), on l'affiche ici, puis on prépare le thème.
+# une fois revenu dans EmulationStation (événement game-end d'ES, ou tout de suite en SSH), on l'affiche ici,
+# puis on prépare le thème.
 INSTALL_MSG="$DATA_DIR/install_msg.txt"; INSTALL_NOTES="$DATA_DIR/install_notes.txt"
 if [ "$1" = "installdone" ]; then
     API=http://127.0.0.1:1234
@@ -105,10 +114,6 @@ if [ "$1" = "installdone" ]; then
     fi
     rm -f "$INSTALL_MSG" "$INSTALL_NOTES"
     exit 0
-fi
-if [ "$1" = "gameStop" ] && [ -f "$INSTALL_MSG" ]; then
-    setsid bash "$SELF" installdone </dev/null >/dev/null 2>&1 &
-    [ -f "$INSTALL_NOTES" ] || exit 0              # installation refusée (thème pas actif) : seulement la fenêtre
 fi
 
 # --- 1) seulement si le thème NXE360 est le thème actif -----------------------
@@ -204,7 +209,7 @@ if [ "$action" != "watch" ] && [ "$action" != "stairs" ]; then
             echo 'exit 0'
         }
         install_hook "$LAUNCHER" launcher_text
-        watch_running || { $(command -v setsid || echo nohup) bash "$SELF" watch </dev/null >/dev/null 2>&1 & }   # pas encore lancée
+        watch_running || detach bash "$SELF" watch   # pas encore lancée
     else
         rm -f "$LAUNCHER"
         watch_stop

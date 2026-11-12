@@ -10,7 +10,7 @@ API=http://127.0.0.1:1234
 setting() { grep -o "name=\"$1\" value=\"[^\"]*\"" "$ES" 2>/dev/null | sed 's/.*value="//;s/"$//'; }
 # Rien ne doit rester en marche après l'installateur : lancé depuis Ports, Batocera attendrait la fin de tout ce
 # qu'il a démarré, et l'écran de lancement resterait affiché. Sa fenêtre est donc laissée dans un fichier, que
-# nxe360_recent.sh affiche à la fin du port (événement gameStop) ou tout de suite si on est en SSH.
+# nxe360_recent.sh affiche une fois revenu dans EmulationStation (événement game-end) ou tout de suite en SSH.
 P="$U/system/configs/nxe360"
 STUB_SCRIPT="$U/system/scripts/nxe360_recent.sh"
 show() {   # $1 = texte de la fenêtre, $2/$3 = notifications (seulement si l'installation a réussi)
@@ -18,9 +18,23 @@ show() {   # $1 = texte de la fenêtre, $2/$3 = notifications (seulement si l'in
     mkdir -p "$P"
     printf '%s' "$1" > "$P/install_msg.txt"
     if [ -n "$2" ]; then printf '%s\n%s\n' "$2" "$3" > "$P/install_notes.txt"; else rm -f "$P/install_notes.txt"; fi
-    if [ "$(curl -s -m 2 -o /dev/null -w "%{http_code}" "$API/runningGame")" = 201 ] && [ -f "$STUB_SCRIPT" ]; then
-        setsid bash "$STUB_SCRIPT" installdone </dev/null >/dev/null 2>&1 &   # SSH : aucun jeu en cours, on affiche tout de suite
-    fi
+    # Lancé depuis Ports (batocera-launch parmi les parents) : on ne lance RIEN maintenant. On pose un petit script
+    # à usage unique sur l'événement « game-end » d'EmulationStation : ES le lance lui-même une fois revenu au menu.
+    # Lancé en SSH : on affiche tout de suite, détaché, sans aucun descripteur hérité.
+    local p=$$ hook="$U/system/configs/emulationstation/scripts/game-end/nxe360_install.sh"
+    while [ "$p" -gt 1 ]; do
+        if grep -q "batocera-launch" "/proc/$p/cmdline" 2>/dev/null; then
+            mkdir -p "${hook%/*}"
+            printf '%s\n' '#!/bin/bash' '# NXE360 : à usage unique, posé par « NXE360 - Installation » (il se supprime tout seul)' \
+                'rm -f "$0"' "setsid bash \"$STUB_SCRIPT\" installdone </dev/null >/dev/null 2>&1 &" 'exit 0' > "$hook"
+            chmod +x "$hook"
+            return 0
+        fi
+        p=$(ps -o ppid= -p "$p" 2>/dev/null | tr -d ' ')
+        [ -n "$p" ] || break
+    done
+    [ -f "$STUB_SCRIPT" ] && ( for f in /proc/$BASHPID/fd/*; do n=${f##*/}; [ "$n" -gt 2 ] 2>/dev/null && eval "exec $n>&-"; done
+                              exec setsid bash "$STUB_SCRIPT" installdone </dev/null >/dev/null 2>&1 ) &
 }
 case "$(setting Language)" in fr*) FR=1 ;; *) FR= ;; esac
 t() { [ -n "$FR" ] && printf '%s' "$1" || printf '%s' "$2"; }   # texte français / anglais
