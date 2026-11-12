@@ -1,15 +1,9 @@
 <div align="center">
 
-# NXE360 THEMR FOR BATOCERA
-
+# NXE360 THEME FOR BATOCERA
 **INSPIRED BY XBOX360**
 
-[
-
 ![Batocera](https://img.shields.io/badge/Batocera-EmulationStation-107C10?style=for-the-badge)
-
-](https://batocera.org)
-[
 
 ![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=for-the-badge)
 
