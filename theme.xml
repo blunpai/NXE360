@@ -4340,8 +4340,9 @@
                 <animation property="opacity" from="1" to="1" begin="330" duration="700"/>
             </storyboard>
         </image>
-        <!-- disque : il s'efface quand la vidéo du jeu démarre dans la tuile (0,3 s), pour ne pas la cacher -->
-        <image name="grid_card_disc" extra="true">
+        <!-- disque : il s'efface quand la vidéo du jeu démarre dans la tuile (0,3 s), pour ne pas la cacher.
+             Pas de disque sur les captures d'écran ni les enregistrements (ce ne sont pas des jeux). -->
+        <image name="grid_card_disc" extra="true" if="${system.name} != 'imageviewer' &amp;&amp; ${system.name} != 'recordings'">
             <path>./art/disc_icon.png</path>
             <visible>!{game:folder}</visible>
             <pos>0.2356 0.5383</pos>
