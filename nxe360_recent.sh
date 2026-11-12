@@ -720,7 +720,7 @@ def mtime(p):
 import bisect, math, struct
 STAIR_DIR = os.path.join(theme_dir, "art", "stair")
 STAIR_LOCK = os.path.join(data_dir, "stairs.lock")
-STAIR_VERSION = 5                                   # à augmenter quand le dessin change : tout est refait
+STAIR_VERSION = 6                                   # à augmenter quand le dessin change : tout est refait
 STAIR_STEPS = 5                                     # marches préparées (celles qui sortent de l'écran sont ignorées) : avec la grande carte, 6 cartes
 STAIR_WM = (None, 1.0, 0.817, 0.675, 0.578, 0.505)  # taille de chaque marche / carte voisine d'origine (mesuré sur le NXE)
 STAIR_RX = (None, 1.0, 1.6254, 2.0016, 2.2862, 2.5048)  # bord droit de chaque marche, compté depuis le bord gauche de la 1re, en largeurs de
@@ -1048,7 +1048,6 @@ class StairArt:
         # carte du modèle (taille du modèle = logoSize x logoScale), en pixels
         self.TW = max(8, int(round(Lw * S * W)))
         self.TH = max(8, int(round(Lh * S * H)))
-        self.s1 = 1.0 / S                                       # échelle d'une carte voisine (le moteur ajoute les reflets sans en tenir compte)
         self.padL, self.padR = int(0.15 * self.TW), int(0.75 * self.TW)
         self.padT, self.padB = int(0.55 * self.TH), int(0.60 * self.TH)
         self.fonts, self.stretched, self.fitted = {}, {}, {}
@@ -1211,7 +1210,7 @@ class StairArt:
         self.put(L, col, x, y)
 
     # ---------- texte (mêmes règles que le moteur d'ES) ----------
-    def text(self, L, txt, fsize, box, rgba, valign="center", glow=False, reflect=False):
+    def text(self, L, txt, fsize, box, rgba, valign="center", glow=False):
         """box = (x, y, largeur, hauteur) en fractions du modèle de carte."""
         if not txt:
             return
@@ -1219,8 +1218,8 @@ class StairArt:
         bx, by, bw, bh = box[0] * self.TW, box[1] * self.TH, box[2] * self.TW, box[3] * self.TH
         sx, sy = int(bw), int(bh)
         lh = f.max_h * 1.5
-        if sy > lh * 1.8 and not reflect:                         # grande zone : plusieurs lignes possibles (le reflet, lui, reprend
-            lines = f.wrap(txt, sx).split("\n")                  # le texte visible de la carte : une seule ligne)
+        if sy > lh * 1.8:                                          # grande zone : plusieurs lignes possibles
+            lines = f.wrap(txt, sx).split("\n")
         else:                                                      # une seule ligne, terminée par « ... » si trop longue
             txt = txt.split("\n")[0]
             if sx and f.width(txt) > sx + 1:
@@ -1231,22 +1230,13 @@ class StairArt:
                     cur = txt[:i]
                 txt = cur + "..."
             lines = [txt]
-        B, max_y, text_h = f.block(lines)
+        B, _, text_h = f.block(lines)
         off_y = 0.0 if valign == "top" else (bh - text_h) / 2.0
         ox, oy = int(round(bx)) - f.PADX, int(round(by + off_y))
         if glow:
             for dx, dy in ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)):
                 self.blit_mask(L, B, ox + dx + 1, oy + dy + 1, (0, 0, 0, 0x22))
         self.blit_mask(L, B, ox, oy, rgba)
-        if reflect:
-            # reflet : copie retournée, de plus en plus transparente en s'éloignant. Le moteur ajoute les décalages
-            # du reflet sans les réduire avec la carte : on les convertit à l'échelle d'une carte voisine.
-            c = (off_y + text_h + bh) / self.s1
-            grad = self.Image.new("L", (1, B.height))
-            grad.putdata([int(255 * min(1.0, (v + 0.5) / max(1.0, float(max_y)))) for v in range(B.height)])
-            m = self.ImageChops.multiply(B, grad.resize(B.size))
-            m = self.ImageOps.flip(m)
-            self.blit_mask(L, m, ox, int(round(by + c - B.height)), rgba, 0.35)
 
     # ---------- une carte ----------
     def theme_icon(self, theme):
@@ -1293,11 +1283,8 @@ class StairArt:
         t = self.tv
         white, sub = (255, 255, 255, 255), (255, 255, 255, 0xA0)
         status = t.get("favOnline", "Online") if online else t.get("favOffline", "Offline")
-        # reflets sur le sol : carte, puis texte (titre, sous-titre)
+        # reflet sur le sol : la carte seule (les textes n'ont pas de reflet)
         self.put(L, self.stretch(os.path.join(a, "card_reflection.png"), TW, int(round(0.13082 * TH))), 0, TH)
-        self.text(L, status if fav else s["fullname"], 0.0357, (0.0629, 0.7760, 0.8523, 0.2148), white, "top", reflect=True)
-        self.text(L, t.get("favService", "RetroAchievements") if fav else s["manufacturer"], 0.0314,
-                  (0.0629, 0.8704, 0.8523, 0.0885), sub, "top", reflect=True)
         # la carte et son ombre intérieure
         self.put(L, self.stretch(os.path.join(a, "card_green_nxe.png"), TW, TH), 0, 0)
         shadow = self.stretch(os.path.join(a, "card_inner_shadow.png"), TW, TH)
