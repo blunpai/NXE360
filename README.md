@@ -7,8 +7,6 @@
 
 ![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=for-the-badge)
 
-](LICENSE)
-
 [How to install](#how-to-install) · [Requirements](#requirements-1-gb-vram-in-emulationstation) · [Avatar](#how-to-change-my-avatar) · [License](#license)
 
 </div>
