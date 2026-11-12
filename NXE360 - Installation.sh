@@ -9,7 +9,22 @@ ES="$U/system/configs/emulationstation/es_settings.cfg"
 API=http://127.0.0.1:1234
 setting() { grep -o "name=\"$1\" value=\"[^\"]*\"" "$ES" 2>/dev/null | sed 's/.*value="//;s/"$//'; }
 notify() { curl -s -m 3 -X POST --data-binary "$1" "$API/notify" >/dev/null 2>&1; }
-msgbox() { curl -s -m 3 -X POST --data-binary "$1" "$API/messagebox" >/dev/null 2>&1 || echo "$1"; }
+# Pendant un port, EmulationStation est caché derrière l'écran de lancement : ce qu'on lui envoie serait perdu.
+# wait_es attend donc le retour dans EmulationStation (plus aucun jeu en cours), au plus 60 secondes.
+wait_es() {
+    local i
+    for i in $(seq 60); do
+        [ "$(curl -s -m 2 -o /dev/null -w "%{http_code}" "$API/runningGame")" = 201 ] && break
+        sleep 1
+    done
+    sleep 2
+}
+# fenêtre d'erreur : affichée en arrière-plan, une fois revenu dans EmulationStation (et écrite pour un lancement en SSH)
+msgbox() {
+    echo "$1"
+    export -f wait_es; export API MSG="$1"
+    setsid bash -c 'wait_es; curl -s -m 3 -X POST --data-binary "$MSG" "$API/messagebox"' </dev/null >/dev/null 2>&1 &
+}
 case "$(setting Language)" in fr*) FR=1 ;; *) FR= ;; esac
 t() { [ -n "$FR" ] && printf '%s' "$1" || printf '%s' "$2"; }   # texte français / anglais
 
@@ -48,8 +63,8 @@ s="$U/themes/\$t/$1"
 exit 0
 STUB
 }
-ok() { printf '✔ %s\n' "$1"; }
-ko() { printf '✖ %s\n' "$1"; }
+ok() { printf '[OK] %s\n' "$1"; }
+ko() { printf '[X] %s\n' "$1"; }
 mkdir -p "$U/system/scripts" "$U/roms/ports"
 R=""
 if stub nxe360_recent.sh > "$U/system/scripts/nxe360_recent.sh" && chmod +x "$U/system/scripts/nxe360_recent.sh"; then
@@ -58,6 +73,7 @@ else
     R+=$(ko "$(t "Script NXE360 : écriture impossible dans /userdata/system/scripts" "NXE360 script: cannot write to /userdata/system/scripts")")$'\n'
 fi
 if [ -f "$T/360sona.sh" ] && stub 360sona.sh > "$U/roms/ports/360sona.sh" && chmod +x "$U/roms/ports/360sona.sh"; then
+    [ -f "$T/360sona.sh.keys" ] && cp -f "$T/360sona.sh.keys" "$U/roms/ports/360sona.sh.keys"   # manette = souris dans 360sona
     R+=$(ok "$(t "360sona ajouté dans Ports (créateur d'avatar)" "360sona added to Ports (avatar creator)")")$'\n'
 fi
 python3 -c "import PIL" 2>/dev/null && R+=$(ok "Python + Pillow")$'\n' || R+=$(ko "$(t "Pillow absent : escalier et jaquettes désactivés" "Pillow missing: staircase and box art disabled")")$'\n'
@@ -70,17 +86,14 @@ $(t "Le thème se prépare maintenant (1 à 2 minutes).
 Suis l'avancement dans les notifications ; il se recharge tout seul à la fin." "The theme is now preparing itself (1-2 minutes).
 Follow the notifications; it reloads by itself when done.")"
 
-# Pendant un port, EmulationStation est caché derrière l'écran de lancement : ce qu'on lui envoie maintenant serait perdu.
-# La suite tourne donc en arrière-plan, attend le retour dans EmulationStation, puis affiche la fenêtre et l'avancement.
+# La suite tourne en arrière-plan : elle attend le retour dans EmulationStation, puis affiche la fenêtre et l'avancement.
+echo "$MSG"
+export -f wait_es
 export MSG API U
 export N1="$(t "NXE360 : préparation du thème..." "NXE360: preparing the theme...")"
-export N2="$(t "NXE360 : prêt ✔ rechargement du thème" "NXE360: ready ✔ reloading the theme")"
+export N2="$(t "NXE360 : prêt, rechargement du thème" "NXE360: ready, reloading the theme")"
 setsid bash -c '
-    for i in $(seq 60); do                               # au plus 60 s : retour dans ES = plus aucun jeu en cours
-        [ "$(curl -s -m 2 -o /dev/null -w "%{http_code}" "$API/runningGame")" = 201 ] && break
-        sleep 1
-    done
-    sleep 2
+    wait_es
     curl -s -m 3 -X POST --data-binary "$MSG" "$API/messagebox"
     curl -s -m 3 -X POST --data-binary "$N1" "$API/notify"
     bash "$U/system/scripts/nxe360_recent.sh" refresh

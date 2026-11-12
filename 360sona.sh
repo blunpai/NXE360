@@ -3,8 +3,11 @@
 # donc remplacer ce fichier pendant qu'il tourne ne provoque plus d'erreur.
 main() {
 # Ports Batocera : TOUT EN UN SEUL FICHIER
-#   1) ouvre 360sona.com -> exporte ton avatar en .glb, puis quitte (Alt+F4)
+#   1) ouvre 360sona.com -> crée ton avatar, puis START + SELECT ensemble (ou F9) : le .glb est exporté et le
+#      navigateur se ferme tout seul (l'export à la main puis Alt+F4 marche toujours)
 #   2) convertit le .glb en GIF animé transparent EN LOCAL (avec support des animations universelles)
+#   Manette (fichier 360sona.sh.keys) : stick gauche = souris, A = clic, B = clic droit, X = Entrée, Y = Échap,
+#   croix = flèches, L1/R1 = page haut/bas, HOTKEY + B = quitter sans exporter.
 #   3) écrit export.gif + export.png dans le thème, dans art/avatar/
 URL1="https://360sona.com/"
 APP="org.chromium.Chromium"
@@ -21,12 +24,13 @@ LOG="/userdata/360sona_log.txt"
 exec > "$LOG" 2>&1
 echo "== $(date)"
 MARK=$(mktemp); touch "$MARK"
-SPID=""
+SPID=""; PAD_PID=""; WATCH_PID=""; EXPORT_JS=""; EXPORT_PY=""
 # Nettoyage garanti à la sortie (fin normale, erreur ou interruption) : serveur et navigateur arrêtés, fichiers temporaires supprimés
 cleanup() {
   [ -n "$SPID" ] && kill "$SPID" 2>/dev/null
+  [ -n "$PAD_PID$WATCH_PID" ] && kill $PAD_PID $WATCH_PID 2>/dev/null   # lecture manette + guet du .glb
   flatpak kill "$APP" 2>/dev/null
-  rm -f "$MARK"
+  rm -f "$MARK" "$EXPORT_JS" "$EXPORT_PY"
   [ -n "$WORK" ] && rm -rf "$WORK"
 }
 trap cleanup EXIT
@@ -58,13 +62,213 @@ if ! flatpak info "$APP" >/dev/null 2>&1; then
 fi
 
 # --- Étape 1 : 360sona ---
+# Export direct à la manette : START + SELECT appuyés ensemble (ou la touche F9) exportent le modèle 3D sans passer
+# par le bouton d'export (le cube). Le script lit lui-même la manette, puis demande à Chromium, par son port de
+# pilotage local, de cliquer les boutons à ta place. (Chromium récent refuse les extensions en ligne de commande.)
+DBG_PORT=9223
+EXPORT_JS="$(mktemp)"; EXPORT_PY="$(mktemp)"
+cat > "$EXPORT_JS" <<'JS'
+// NXE360 : clique le bouton d'export 3D (le cube) puis « Export », et affiche un message vert en bas de l'écran.
+(async () => {
+  if (window.__nxeBusy) return;
+  window.__nxeBusy = true;
+  // texte du bouton ; pour un bouton-icône (le cube « Export a 3D model »), son nom caché ou son infobulle
+  const txt = (e) => (e.innerText || e.textContent || e.getAttribute('aria-label') || e.getAttribute('title')
+    || e.getAttribute('data-tooltip') || e.getAttribute('data-title') || '').trim().replace(/\s+/g, ' ');
+  const visible = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
+  const BTN = 'button, [role="button"], input[type="button"], input[type="submit"]';
+  // élément visible dont le texte correspond ; le texte le plus court gagne (le bouton, pas son conteneur)
+  const find = (re, sel) => [...document.querySelectorAll(sel)]
+    .filter((e) => visible(e) && re.test(txt(e) || e.value || '')).sort((a, b) => txt(a).length - txt(b).length)[0];
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const say = (m) => {
+    let box = document.getElementById('nxe360-msg');
+    if (!box) {
+      box = document.createElement('div'); box.id = 'nxe360-msg';
+      box.style.cssText = 'position:fixed;left:50%;bottom:8%;transform:translateX(-50%);z-index:2147483647;' +
+        'background:#107C10;color:#fff;font:600 22px sans-serif;padding:14px 26px;border-radius:8px;pointer-events:none';
+      document.documentElement.appendChild(box);
+    }
+    box.textContent = m; box.style.display = 'block';
+    clearTimeout(window.__nxeT); window.__nxeT = setTimeout(() => { box.style.display = 'none'; }, 6000);
+  };
+  try {
+    say('Export du modèle 3D...');
+    const FINAL = /^export$/i, OPEN = /export.{0,12}3d|3d model|mod[eè]le 3d/i;
+    let go = find(FINAL, BTN);                     // un vrai bouton, pas un simple titre « Export »
+    if (!go) {                                     // panneau d'export fermé : on l'ouvre d'abord (le cube)
+      const open = find(OPEN, BTN + ', [role="tab"], a, summary, label, li, div, span');
+      if (!open) { say('Bouton d\'export introuvable : exporte à la main'); return; }
+      open.click();
+      for (let i = 0; i < 30 && !(go = find(FINAL, BTN)); i++) await sleep(100);
+    }
+    if (!go) { say('Bouton « Export » introuvable : exporte à la main'); return; }
+    // réglages du panneau (bouton, case à cocher ou liste déroulante selon le site) :
+    //   For = Blender, puis Props = In the hand (sinon l'objet tenu est aussi posé à côté de l'avatar, sans texture)
+    const pick = async (re) => {
+      const opt = [...document.querySelectorAll('select option')].find((o) => re.test(txt(o)));
+      if (opt) {
+        opt.parentElement.value = opt.value;
+        opt.parentElement.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        const e = find(re, BTN + ', [role="radio"], [role="option"], [role="tab"], label, li, span, div');
+        if (e) e.click();
+      }
+      await sleep(200);                            // le panneau peut se redessiner après un choix
+    };
+    await pick(/^blender$/i);
+    await pick(/^in the hand$/i);
+    go = find(FINAL, BTN) || go;                   // le panneau peut se redessiner après le choix
+    go.click();
+    say('Modèle exporté : la conversion démarre...');
+  } finally { window.__nxeBusy = false; }
+})();
+JS
+cat > "$EXPORT_PY" <<'PY'
+# NXE360 : START + SELECT sur une manette, ou F9 au clavier -> lance export.js dans la page 360sona de Chromium.
+import base64, json, os, select, socket, struct, sys, time, urllib.request
+PORT, JS = int(sys.argv[1]), open(sys.argv[2]).read()
+
+def page_ws():
+    """Adresse de pilotage de l'onglet 360sona (None si Chromium n'est pas prêt)."""
+    try:
+        direct = urllib.request.build_opener(urllib.request.ProxyHandler({}))      # jamais par un proxy
+        tabs = json.load(direct.open(f"http://127.0.0.1:{PORT}/json", timeout=2))
+    except Exception:
+        return None
+    tabs = [t for t in tabs if t.get("type") == "page" and t.get("webSocketDebuggerUrl")]
+    for t in tabs:
+        if "360sona" in t.get("url", ""):
+            return t["webSocketDebuggerUrl"]
+    return tabs[0]["webSocketDebuggerUrl"] if tabs else None
+
+def run_js(ws_url):
+    """Un seul message WebSocket (Runtime.evaluate) ; pas de bibliothèque WebSocket sur Batocera."""
+    host, path = ws_url[len("ws://"):].split("/", 1)
+    name, port = host.split(":")
+    s = socket.create_connection((name, int(port)), timeout=5)
+    key = base64.b64encode(os.urandom(16)).decode()
+    s.sendall((f"GET /{path} HTTP/1.1\r\nHost: {host}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"
+               f"Sec-WebSocket-Key: {key}\r\nSec-WebSocket-Version: 13\r\n\r\n").encode())
+    if b" 101 " not in s.recv(4096):
+        raise OSError("poignée de main WebSocket refusée")
+    data = json.dumps({"id": 1, "method": "Runtime.evaluate", "params": {"expression": JS}}).encode()
+    mask = os.urandom(4)
+    n = len(data)
+    head = b"\x81" + (bytes([0x80 | n]) if n < 126 else b"\xfe" + struct.pack(">H", n) if n < 65536
+                      else b"\xff" + struct.pack(">Q", n))
+    s.sendall(head + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(data)))
+    s.settimeout(3)
+    try:
+        s.recv(4096)                                # la réponse (on attend juste qu'elle soit partie)
+    except OSError:
+        pass
+    s.close()
+
+def export():
+    ws = page_ws()
+    if not ws:
+        print("export : Chromium injoignable", flush=True); return
+    try:
+        run_js(ws); print("export : demandé à la page", flush=True)
+    except Exception as e:
+        print("export : échec", repr(e), flush=True)
+
+if os.environ.get("NXE360_TEST_EXPORT"):            # (test uniquement : pas de manette, un seul export)
+    export(); sys.exit(0)
+
+try:
+    import evdev
+    from evdev import ecodes as E
+except Exception as e:
+    print("lecture manette impossible (python-evdev absent) :", repr(e), flush=True); sys.exit(0)
+
+devs, held, fired, scan, seen_browser = {}, {}, False, 0.0, False
+while True:
+    now = time.time()
+    if now - scan > 3:                              # manettes/claviers branchés en cours de route + fin du navigateur
+        scan = now
+        alive = page_ws() is not None
+        seen_browser = seen_browser or alive
+        if seen_browser and not alive:
+            break                                   # navigateur fermé : terminé
+        for p in evdev.list_devices():
+            if p not in devs:
+                try:
+                    d = evdev.InputDevice(p)
+                    keys = d.capabilities().get(E.EV_KEY, [])
+                    if (E.BTN_START in keys and E.BTN_SELECT in keys) or E.KEY_F9 in keys:
+                        devs[p], held[p] = d, set()
+                    else:
+                        d.close()
+                except Exception:
+                    pass
+    try:
+        ready, _, _ = select.select(list(devs.values()), [], [], 0.2)
+    except Exception:
+        ready = []
+    for d in ready:
+        try:
+            for ev in d.read():
+                if ev.type != E.EV_KEY:
+                    continue
+                if ev.code == E.KEY_F9 and ev.value == 1:
+                    export()
+                (held[d.path].add if ev.value else held[d.path].discard)(ev.code)
+        except BlockingIOError:                     # rien à lire finalement
+            pass
+        except Exception:                           # manette débranchée
+            devs.pop(d.path, None); held.pop(d.path, None)
+    combo = any(E.BTN_START in h and E.BTN_SELECT in h for h in held.values())
+    if combo and not fired:                         # dès que les deux boutons sont enfoncés ; une fois par appui
+        export()
+    fired = combo
+PY
+
+# Le port de pilotage n'est accepté par Chromium qu'avec un profil à part : il est créé une fois, en copie du profil
+# habituel (tes avatars enregistrés sur 360sona et ta connexion y sont repris).
+PROFILE=""
+for d in "$HOME/.var/app/$APP/config/chromium" "/userdata/saves/flatpak/data/.var/app/$APP/config/chromium"; do
+  if [ -d "$d" ]; then
+    PROFILE="${d}-nxe360"
+    if [ ! -d "$PROFILE" ]; then                  # copie complète ou rien : jamais de profil à moitié copié
+      rm -rf "$PROFILE.tmp"
+      cp -a "$d" "$PROFILE.tmp" && rm -f "$PROFILE.tmp"/Singleton* && mv "$PROFILE.tmp" "$PROFILE" || rm -rf "$PROFILE.tmp"
+    fi
+    break
+  fi
+done
+[ -n "$PROFILE" ] || PROFILE="${DL_DIRS[0]}/.nxe360_profile"
+python3 "$EXPORT_PY" "$DBG_PORT" "$EXPORT_JS" &
+PAD_PID=$!
+
+# Dès qu'un .glb complet arrive dans Téléchargements, on ferme le navigateur : la conversion démarre toute seule.
+(
+  last=""
+  while sleep 1; do
+    f=$(find "${DL_DIRS[@]}" -type f -iname '*.glb' -path '*ownload*' -newer "$MARK" 2>/dev/null | head -1)
+    [ -n "$f" ] || continue
+    sz=$(stat -c %s "$f" 2>/dev/null)
+    if [ -n "$sz" ] && [ "$sz" = "$last" ] && [ "$sz" -gt 0 ]; then     # taille stable = téléchargement fini
+      sleep 1; flatpak kill "$APP" 2>/dev/null; break
+    fi
+    last=$sz
+  done
+) &
+WATCH_PID=$!
+
+# --hide-crash-restore-bubble : le navigateur est fermé d'office après l'export, sans ça il proposerait au lancement
+# suivant de « restaurer les pages »
+CHROME_ARGS=(--kiosk --no-sandbox --hide-crash-restore-bubble --remote-debugging-port=$DBG_PORT --user-data-dir="$PROFILE")
 OZONE=wayland
-flatpak run "$APP" --kiosk --no-sandbox --ozone-platform=$OZONE "$URL1"
-if [ $? -ne 0 ]; then
+flatpak run "$APP" "${CHROME_ARGS[@]}" --ozone-platform=$OZONE "$URL1"
+if [ $? -ne 0 ] && [ -z "$(find "${DL_DIRS[@]}" -type f -iname '*.glb' -path '*ownload*' -newer "$MARK" 2>/dev/null | head -1)" ]; then
   echo "Wayland a échoué, essai en X11..."
   OZONE=x11
-  flatpak run "$APP" --kiosk --no-sandbox --ozone-platform=$OZONE "$URL1"
+  flatpak run "$APP" "${CHROME_ARGS[@]}" --ozone-platform=$OZONE "$URL1"
 fi
+kill $WATCH_PID $PAD_PID 2>/dev/null; WATCH_PID=""; PAD_PID=""
+rm -f "$EXPORT_JS" "$EXPORT_PY"
 
 GLB=$(find "${DL_DIRS[@]}" -type f -iname '*.glb' -path '*ownload*' -newer "$MARK" -printf '%T@ %p\n' 2>/dev/null \
       | sort -n | tail -1 | cut -d' ' -f2-)
