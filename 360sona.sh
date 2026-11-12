@@ -104,7 +104,8 @@ cat > "$EXPORT_JS" <<'JS'
     }
     if (!go) { say('Bouton « Export » introuvable : exporte à la main'); return; }
     // réglages du panneau (bouton, case à cocher ou liste déroulante selon le site) :
-    //   For = Blender, puis Props = In the hand (sinon l'objet tenu est aussi posé à côté de l'avatar, sans texture)
+    //   For = Blender, Props = In the hand (sinon l'objet tenu est aussi posé à côté de l'avatar, sans texture),
+    //   Animations = toutes (Select all)
     const pick = async (re) => {
       const opt = [...document.querySelectorAll('select option')].find((o) => re.test(txt(o)));
       if (opt) {
@@ -118,6 +119,7 @@ cat > "$EXPORT_JS" <<'JS'
     };
     await pick(/^blender$/i);
     await pick(/^in the hand$/i);
+    await pick(/^select all$/i);                   // toutes les animations (sinon l'avatar ne fait que tourner sur lui-même)
     go = find(FINAL, BTN) || go;                   // le panneau peut se redessiner après le choix
     go.click();
     say('Modèle exporté : la conversion démarre...');
