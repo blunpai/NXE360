@@ -1,21 +1,35 @@
 <div align="center">
 
 # DASHBOARD NXE360
-### INSPIRED BY XBOX360
+
+**INSPIRED BY XBOX360**
+
+[
+
+![Batocera](https://img.shields.io/badge/Batocera-EmulationStation-107C10?style=for-the-badge)
+
+](https://batocera.org)
+[
+
+![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=for-the-badge)
+
+](LICENSE)
+
+[How to install](#how-to-install) · [Requirements](#requirements-1-gb-vram-in-emulationstation) · [Avatar](#how-to-change-my-avatar) · [License](#license)
 
 </div>
 
 <hr>
 
-## 📥 HOW TO INSTALL?
+## How to install?
 
 1. Download the theme zip and extract it in the **themes** folder of your Batocera.
 2. Then put the script `NXE360 - Installation.sh` in the **ports** roms folder and start the script.
-3. After 2 min, the theme is ready. ✅
+3. After 2 min, the theme is ready.
 
 <hr>
 
-## ⚙️ REQUIREMENTS: 1 GB VRAM in EmulationStation
+## Requirements: 1 GB VRAM in EmulationStation
 
 1. Press **Start** to open the main menu.
 2. Go to **System Settings**, then **Developer**.
@@ -24,8 +38,17 @@
 
 <hr>
 
-## 🧑 HOW TO CHANGE MY AVATAR?
+## How to change my avatar?
 
 1. Launch **360sona** in **Ports** and create your avatar.
 2. Then press **Select + Start** to export and wait a few minutes.
 3. You can change your avatar in your **theme configuration**.
+
+<hr>
+
+## License
+
+**NXE360** by **Blunpai** — [CC BY-NC-SA 4.0](LICENSE).
+Free to use, share and modify with credit to Blunpai, for non-commercial use, under the same license.
+
+<sub>Xbox, Xbox 360 and the NXE design are trademarks and works of Microsoft. NXE360 is a free fan project, not affiliated with or endorsed by Microsoft. Sounds, fonts, wallpapers and game artwork belong to their respective owners.</sub>
